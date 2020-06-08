@@ -1,12 +1,15 @@
 import _ConfirmPage from "./Confirm_page";
-import _KcSelection from "./Kc_selection";
-import _KcPhaseSelection from "./Kc_phase_selection";
 import _Home from "./Home";
 import _DrawerComponent from "./Drawer";
+import _Device from "./Device";
+import _Home2 from "./Home2";
+import _CultureList from "./CultureList";
+import _Profile from "./Profile";
 
 export const ConfirmPage = _ConfirmPage;
-export const KcSelection = _KcSelection;
-export const KcPhaseSelection = _KcPhaseSelection;
 export const Home = _Home;
 export const DrawerComponent = _DrawerComponent;
-
+export const Device = _Device;
+export const Home2 = _Home2;
+export const CultureList = _CultureList;
+export const Profile = _Profile;

@@ -9,13 +9,14 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { NativeModules } from 'react-native';
 const { TimeController } = NativeModules;
 import { Creators as SpaceActions } from "./src/store/ducks/space";
+import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
 
 if (__DEV__) {
-    import('./ReactotronConfig').then(() => console.log('Reactotron Configured'))
+    import('./ReactotronConfig').then(() => console.log('Reactotron Configured'));
 }
 
 const timeController = async () => {
-    ToastAndroid.showWithGravity('Receiving HeartBeat!', ToastAndroid.SHORT, ToastAndroid.CENTER);
+    /* ToastAndroid.showWithGravity('Receiving HeartBeat!', ToastAndroid.SHORT, ToastAndroid.CENTER); */
     store.dispatch(SpaceActions.decreaseTime());
 };
 
@@ -31,4 +32,4 @@ const RNRedux = () => {
 };
 
 AppRegistry.registerHeadlessTask("timeController", () => timeController);
-AppRegistry.registerComponent(appName, () => RNRedux);
+AppRegistry.registerComponent(appName, () => gestureHandlerRootHOC(RNRedux));
