@@ -6,13 +6,30 @@ import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { material, systemWeights } from 'react-native-typography'
 import { Icon, Avatar } from 'react-native-elements'
 import { ReloadInstructions } from "react-native/Libraries/NewAppScreen";
-import Modal from 'react-native-modalbox';
+import { Animated } from 'react-native';
+
+
+
+import { Modal } from '@components';
+
+
+const AnimatedIcon = Animated.createAnimatedComponent(Icon);
+const AnimatedView = Animated.createAnimatedComponent(View);
+const scale = new Animated.Value(1);
+const opacity = new Animated.Value(1);
+const translateY = new Animated.Value(0);
+const opacityInterpolate = opacity.interpolate({
+    inputRange: [0, 0.85, 1],
+    outputRange: [0, 0, 1]
+});
 
 class SpaceComponent extends PureComponent {
 
     constructor(props) {
         super(props);
         this.state = {
+            modal: false,
+            playButtonToggled: true
         };
     }
 
@@ -20,12 +37,35 @@ class SpaceComponent extends PureComponent {
 
     }
 
+    _onPressPlayButton() {
+        this.setState(prevState => ({ playButtonToggled: !prevState.playButtonToggled }));
+        if (this.state.playButtonToggled) {
+            console.log("pipi")
+            Animated.parallel([
+                Animated.timing(scale, { toValue: 1.2, easing: Easing.elastic(), useNativeDriver: true }),
+                Animated.timing(opacity, { toValue: 1, useNativeDriver: true }),
+                Animated.timing(translateY, { toValue: -20, useNativeDriver: true })
+            ]).start();
+        } else {
+            Animated.parallel([
+                Animated.timing(scale, { toValue: 1, useNativeDriver: true }),
+                Animated.timing(opacity, { toValue: 1, useNativeDriver: true }),
+                Animated.timing(translateY, { toValue: 0, useNativeDriver: true })
+            ]).start();
+        }
+    }
+
+
+
     render() {
         const name = this.props.name;
-        const phase = this.props.select;
+        cultureImageLink = this.props.cultureImageLink;
+        const kc = this.props.kc;
+        const culturePhase = this.props.culturePhase;
         const culture = this.props.culture;
         const time = this.props.time;
         const currentTime = this.props.currentTime;
+        console.log("DFSF:", this.props.eto);
         let { data, service, type, parameters } = this.props.eto.features;
         data = data[0];
         const etc = (parseFloat(data.Eto) * parseFloat(phase.value)).toFixed(2);

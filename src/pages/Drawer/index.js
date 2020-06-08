@@ -8,11 +8,10 @@ import {
     SafeAreaView,
     Image
 } from "react-native";
-import { DrawerNavigatorItems } from 'react-navigation-drawer';
+import { DrawerNavigatorItems } from '@react-navigation/drawer';
 import { Avatar } from 'react-native-elements'
 
 const DrawerComponent = (props) => (
-
     <View>
         <SafeAreaView>
             <View >
@@ -29,9 +28,7 @@ const DrawerComponent = (props) => (
                 <DrawerNavigatorItems {...props} />
             </View>
         </SafeAreaView>
-
     </View>
-
 );
 
 export default DrawerComponent

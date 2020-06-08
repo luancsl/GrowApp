@@ -1,88 +1,231 @@
-import React, { Component } from "react";
-import {
-    View,
-    Text,
-    StyleSheet,
-    TouchableOpacity
-} from "react-native";
-import { Home, ConfirmPage, KcSelection, KcPhaseSelection, DrawerComponent } from '@pages'
-import { createAppContainer } from 'react-navigation';
-import { createDrawerNavigator } from 'react-navigation-drawer';
-import { createStackNavigator } from 'react-navigation-stack';
-import Icon from 'react-native-vector-icons/Ionicons';
-import Search from 'react-native-search-box';
+import React from "react";
+import { Home, ConfirmPage, Device, Home2, CultureList, Profile } from '@pages'
+import { View, Animated, Text, StyleSheet, Dimensions, TextInput, FlatList, TouchableOpacity, NativeModules, RefreshControl, ScrollView, InteractionManager } from "react-native";
+import { Icon } from "react-native-elements";
+import { NavigationContainer } from '@react-navigation/native';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import Reanimated from 'react-native-reanimated';
+import IconMaterial from 'react-native-vector-icons/MaterialCommunityIcons';
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 
-/* const KcSelectionStack = createStackNavigator({
-    KcSelection: {
-        screen: KcSelection,
-        navigationOptions: {
-            header: null
-        }
-    },
-    KcPhaseSelection:{
-        screen: KcPhaseSelection,
-        navigationOptions: {
-            header: null
-        }
-    }
-})
- */
+const animatedOpacity = new Animated.Value(1);
+const animatedTY = new Animated.Value(0);
 
-const DrawerStack = createStackNavigator({
-    Home: {
-        screen: Home,
-        navigationOptions: { header: null }
-    },
+const startAnimation = () => {
+    Animated.parallel([
+        Animated.timing(animatedOpacity, {
+            toValue: 0,
+            duration: 1000,
+            useNativeDriver: true
+        }),
+        Animated.timing(animatedTY, {
+            toValue: 70,
+            duration: 600,
+            useNativeDriver: true
+        })
+    ]).start();
 
-    KcSelection: {
-        screen: KcSelection,
-        navigationOptions: { header: null }
-    },
+}
 
-    KcPhaseSelection: {
-        screen: KcPhaseSelection,
-        navigationOptions: { title: null }
-    },
-    ConfirmPage: {
-        screen: ConfirmPage,
-        navigationOptions: { title: null }
-    }
-})
+const endAnimation = () => {
+    return (
+        Animated.parallel([
+            Animated.timing(animatedOpacity, {
+                toValue: 1,
+                duration: 1000,
+                useNativeDriver: true
+            }),
+            Animated.timing(animatedTY, {
+                toValue: 70,
+                duration: 600,
+                useNativeDriver: true
+            })
+        ]).start()
+    );
+}
 
-const MainNavigator = createDrawerNavigator(
-    {
-        Home: DrawerStack,
-    },
-    {
-        initialRouteName: 'Home',
-        drawerPosition: 'left',
-        contentComponent: DrawerComponent,
-        drawerOpenRoute: 'DrawerOpen',
-        drawerCloseRoute: 'DrawerClose',
-        drawerToggleRoute: 'DrawerToggle',
+/* const Stack = createStackNavigator();
 
-    });
+const DrawerStack = () => {
+    return (
+        <Stack.Navigator>
+            <Stack.Screen
+                name='Home2'
+                component={Home2}
+                options={{ header: null }}
+            />
+        </Stack.Navigator>
+    );
+}
 
-/* const MainNavigator = createSwitchNavigator(
-    {
-        AuthLoading: AuthLoadingScreen,
-        AuthStack,
-        MainRoutes: {
-            screen: MainRoutes,
-            navigationOptions: {
-                headerStyle: {
-                    backgroundColor: '#0ff',
-                },
-                headerTintColor: '#FFFFFF',
-                title: 'MyBookStore',
-            },
-        },
-    },
-    {
-        // initialRouteName: 'UserBooks',
-    },
-); */
+const Drawer = createDrawerNavigator();
 
-const App = createAppContainer(MainNavigator);
+const MainNavigator = () => {
+    return (
+        <NavigationContainer>
+            <Drawer.Navigator
+                initialRouteName='Home2'
+            >
+                <Drawer.Screen
+                    name='Device'
+                    component={Device}
+                />
+                <Drawer.Screen
+                    name='Home2'
+                    component={Home2}
+                />
+            </Drawer.Navigator>
+        </NavigationContainer>
+    );
+} */
+
+function MyTabBar({ state, descriptors, navigation, position }) {
+    return (
+        <View style={{ flexDirection: 'row' }}>
+            {state.routes.map((route, index) => {
+                const { options } = descriptors[route.key];
+                const label =
+                    options.tabBarLabel !== undefined
+                        ? options.tabBarLabel
+                        : options.title !== undefined
+                            ? options.title
+                            : route.name;
+
+                const isFocused = state.index === index;
+
+                const onPress = () => {
+                    const event = navigation.emit({
+                        type: 'tabPress',
+                        target: route.key,
+                        canPreventDefault: true,
+                    });
+
+                    if (!isFocused && !event.defaultPrevented) {
+                        navigation.navigate(route.name);
+                    }
+                };
+
+                const onLongPress = () => {
+                    navigation.emit({
+                        type: 'tabLongPress',
+                        target: route.key,
+                    });
+                };
+
+                const inputRange = state.routes.map((_, i) => i);
+                const opacity = Reanimated.interpolate(position, {
+                    inputRange,
+                    outputRange: inputRange.map(i => (i === index ? 1 : 0)),
+                });
+
+                return (
+                    <TouchableOpacity
+                        accessibilityRole="button"
+                        accessibilityStates={isFocused ? ['selected'] : []}
+                        accessibilityLabel={options.tabBarAccessibilityLabel}
+                        testID={options.tabBarTestID}
+                        onPress={onPress}
+                        onLongPress={onLongPress}
+                        style={{ flex: 1 }}
+                    >
+                        <Reanimated.Text style={{ opacity }}>
+                            {label}
+                        </Reanimated.Text>
+                    </TouchableOpacity>
+                );
+            })}
+        </View>
+    );
+}
+
+const Tab = createMaterialTopTabNavigator();
+
+const TabMainNavigator = () => {
+    return (
+        <NavigationContainer>
+            <Tab.Navigator
+                tabBarPosition={"bottom"}
+                style={{
+                    backgroundColor: '#ffff'
+                }}
+                tabBarOptions={{
+                    showIcon: true,
+                    showLabel: false,
+                    renderIndicator: () => null
+                }}
+            >
+                <Tab.Screen
+                    name="Home"
+                    options={{
+                        tabBarIcon: ({ focused, color, size }) => (
+                            <Icon
+                                color={color}
+                                size={focused ? 22 + 3 : 22}
+                                name='home'
+                                type='feather'
+                            />
+                        )
+                    }}
+                >
+                    {props => <Home2 {...props} />}
+                </Tab.Screen>
+
+                <Tab.Screen
+                    name="List"
+                    options={{
+                        tabBarIcon: ({ focused, color, size }) => (
+                            <Icon
+                                color={color}
+                                size={focused ? 23 + 3 : 23}
+                                name='list'
+                                type='feather'
+                            />
+                        )
+                    }}
+                >
+                    {props => <CultureList {...props} />}
+                </Tab.Screen>
+
+                <Tab.Screen
+                    name="Devices"
+                    options={{
+                        tabBarIcon: ({ focused, color, size }) => (
+                            <Icon
+                                color={color}
+                                size={focused ? 23 + 3 : 23}
+                                name='mobile-signal'
+                                type='foundation'
+                            />
+                        )
+                    }}
+                >
+                    {props => <Device {...props} />}
+                </Tab.Screen>
+
+                <Tab.Screen
+                    name="Profile"
+                    options={{
+                        tabBarIcon: ({ focused, color, size }) => (
+                            <Icon
+                                color={color}
+                                size={focused ? 22 + 2 : 22}
+                                name='user-circle'
+                                type='font-awesome'
+                            />
+                        )
+                    }}
+                >
+                    {props => <Profile {...props} />}
+                </Tab.Screen>
+
+            </Tab.Navigator>
+        </NavigationContainer>
+    );
+}
+
+const App = TabMainNavigator;
 
 export default App;

@@ -1,16 +1,20 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet, Dimensions, TextInput, FlatList, TouchableOpacity, AsyncStorage } from "react-native";
-import ScrollableTabView, { ScrollableTabBar, } from 'react-native-scrollable-tab-view';
-import { sia, requestElevation } from "../../services/sia_api";
+import { View, Text, StyleSheet, Dimensions, TextInput, FlatList, TouchableOpacity, AsyncStorage, StatusBar } from "react-native";
+import ScrollableTabView, { ScrollableTabBar, DefaultTabBar, } from 'react-native-scrollable-tab-view';
+import { sia } from "@services";
 import MapView from "react-native-maps";
 import { Header, ListItem } from 'react-native-elements'
 import Modal from 'react-native-modalbox';
 import PushNotification from 'react-native-push-notification';
 import SpaceComponent from './components/space_component';
 import { material, systemWeights } from 'react-native-typography';
+import { NativeModules } from 'react-native';
+const { TimeController } = NativeModules;
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { Creators as SpaceActions } from "../../store/ducks/space";
+import { Creators as ConfigActions, Types } from "@store/ducks/config";
+import Geolocation from '@react-native-community/geolocation';
 
 class Home extends Component {
     state = {
@@ -30,10 +34,20 @@ class Home extends Component {
     };
 
     async componentWillMount() {
+        StatusBar.setHidden(true);
         const etc_list = JSON.parse(await AsyncStorage.getItem('etc_list'));
         console.log("duda", etc_list);
         this.setState({ etc_list: etc_list });
     }
+
+    componentWillReceiveProps(props) {
+        console.log('Entrou Props');
+        const page = props.navigation.getParam('tabPage', 0);
+        console.log("page", typeof (page));
+        this.tabView ? this.tabView.goToPage(page) : '';
+
+    }
+
 
     get_data(atraso) {
         let data = new Date();
@@ -92,9 +106,15 @@ class Home extends Component {
     }
 
     componentDidMount() {
+        const { config, noWelcome } = this.props;
         this.set_data();
 
         this.get_pet();
+
+        if (config.welcome) {
+            TimeController.startService();
+        }
+        noWelcome();
     }
 
     _onPressKcSelection() {
@@ -139,17 +159,45 @@ class Home extends Component {
         return (
             <View style={{ flex: 1 }}>
                 <Header
-                    leftComponent={{ icon: 'menu', color: '#fff', onPress: () => this.props.navigation.toggleDrawer() }}
-                    centerComponent={{ text: 'GROW APP', style: { color: '#fff' } }}
+                    barStyle="light-content"
+                    containerStyle={{ height: 50, borderWidth: 0, paddingTop: 0, marginBottom: 0, borderBottomWidth: 0, backgroundColor: '#4F6D7A' }}
+                    leftComponent={{ icon: 'menu', color: '#fff', onPress: () => this.props.navigation.toggleDrawer(), underlayColor: '#9999' }}
+                    centerComponent={{ text: 'GrowApp', style: { color: '#fff' } }}
                     rightComponent={{ icon: 'home', color: '#fff' }}
                 />
                 <Modal style={[styles.modal, styles.modal4]} position={"bottom"} ref={"modal4"} coverScreen={true}>
                     <Text style={styles.text}>Modal on bottom with backdrop</Text>
                 </Modal>
                 <View style={{ flex: 1 }}>
+                    <View
+                        style={{
+                            flex: 1,
+                            justifyContent: 'center',
+                            borderWidth: 2,
+                            width: 200,
+                            backgroundColor: '#fff',
+                            position: 'absolute',
+                            top: 20,
+                            bottom: 200,
+                            left: 0,
+                            right: 0,
+                            zIndex: 5,
+                            opacity: 0,
+                        }}
+                    >
+                        <Text>sdfadfd</Text>
+                    </View>
                     <ScrollableTabView
                         initialPage={0}
-                        renderTabBar={() => <ScrollableTabBar />}
+                        ref={tabView => this.tabView = tabView}
+                        renderTabBar={() =>
+                            <ScrollableTabBar
+                                tabStyle={{ backgroundColor: '#FFFF', borderTopEndRadius: 17, borderTopStartRadius: 17, paddingBottom: 20, marginTop: 6, overflow: 'hidden' }}
+                                style={{ height: 35, backgroundColor: '#4F6D7A', justifyContent: 'center', borderWidth: 0 }}
+                                textStyle={{}}
+                            />
+                        }
+                        tabBarUnderlineStyle={{ height: 1, backgroundColor: '#4F6D7A' }}
                     >
                         <View tabLabel='Espaços' onStartShouldSetResponder={() => true}>
                             <FlatList
@@ -158,10 +206,12 @@ class Home extends Component {
                                 renderItem={({ item }) => (
                                     <SpaceComponent
                                         name={item.name}
+                                        cultureImageLink={item.cultureImageLink}
+                                        culturePhase={item.culturePhase}
+                                        kc={item.kc}
                                         eto={item.eto}
-                                        culture={item.kc}
-                                        select={item.phase_select}
                                         time={item.time}
+                                        typeIrrigation={item.typeIrrigation}
                                         currentTime={item.currentTime}
                                     />
                                 )}
@@ -227,17 +277,18 @@ class Home extends Component {
                         </View>
                     </ScrollableTabView>
                 </View>
-            </View>
+            </View >
         );
     }
 }
 
 const mapStateToProps = state => ({
-    spaces: state.spaceState
+    spaces: state.spaceState,
+    config: state.configState
 });
 
 const mapDispatchToProps = dispatch =>
-    bindActionCreators(SpaceActions, dispatch);
+    bindActionCreators({ ...ConfigActions, ...SpaceActions }, dispatch);
 
 export default connect(
     mapStateToProps,
