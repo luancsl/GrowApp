@@ -33,12 +33,13 @@ class KcPhaseSelection extends PureComponent {
 
     render() {
         const kc = this.state.kc
+        console.log("KASDFD: ", kc);
         return (
             <View style={styles.container}>
 
                 <View style={styles.header}>
                     <Image
-                        source={{ uri: kc.image_link }}
+                        source={{ uri: kc.icon }}
                         containerStyle={{ borderRadius: 5, overflow: 'hidden', }}
                         style={{ width: 150, height: 150, }}
                     />
@@ -50,22 +51,22 @@ class KcPhaseSelection extends PureComponent {
                     </View>
 
                     <Button
-                        title={'Inicio - ' + kc.ini}
+                        title={'Inicio - ' + kc.iniStagekc}
                         buttonStyle={{ marginBottom: 10 }}
                         type="outline"
-                        onPress={() => this._onPressConfirm('ini', kc.ini)}
+                        onPress={() => this._onPressConfirm('ini', kc.iniStagekc)}
                     />
                     <Button
-                        title={'Meio - ' + kc.mid}
+                        title={'Meio - ' + kc.midStageKc}
                         buttonStyle={{ marginBottom: 10 }}
                         type="outline"
-                        onPress={() => this._onPressConfirm('mid', kc.mid)}
+                        onPress={() => this._onPressConfirm('mid', kc.midStagekc)}
                     />
                     <Button
-                        title={'Fim - ' + kc.end}
+                        title={'Fim - ' + kc.endStagekc}
                         buttonStyle={{ marginBottom: 10 }}
                         type="outline"
-                        onPress={() => this._onPressConfirm('end', kc.end)}
+                        onPress={() => this._onPressConfirm('end', kc.endStagekc)}
                     />
                 </View>
 

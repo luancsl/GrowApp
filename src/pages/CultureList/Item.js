@@ -9,15 +9,15 @@ export default (props) => {
                 <View style={{ flex: 0.23, marginRight: 2, borderRadius: 15, overflow: 'hidden', }}>
                     <Image
                         source={{
-                            uri: props.item.image_link,
+                            uri: props.item.icon,
                         }}
                         resizeMode="cover"
                         style={{ width: 70, height: 70 }}
                     />
                 </View>
                 <View style={{ flex: 0.77, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={{ fontSize: 20, fontWeight: 'bold', color: "#1116" }}>{props.item.culture}</Text>
-                    {props.item.type !== '' ? <Text>{props.item.type}</Text> : null}
+                    <Text style={{ fontSize: 20, fontWeight: 'bold', color: "#1116" }}>{props.item.name.ptBR}</Text>
+                    {props.item.type ? <Text>{props.item.type.ptBR}</Text> : null}
                 </View>
             </TouchableOpacity>
         </View>
