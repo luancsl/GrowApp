@@ -4,6 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator, CardStyleInterpolators } from "@react-navigation/stack";
 import { KcSelection, StepEtc } from './pages';
 
+
 const Stack = createStackNavigator();
 
 class TakeStep extends PureComponent {
@@ -15,7 +16,6 @@ class TakeStep extends PureComponent {
     }
 
     componentDidMount() {
-        this.props.onTakeStep();
         const eto_data = this.props.route.params;
         this.setState({ data: eto_data });
     }
@@ -25,7 +25,6 @@ class TakeStep extends PureComponent {
     }
 
     _handleOnFinish() {
-        this.props.onFinish();
         this.props.navigation.navigate('Home');
     }
 
@@ -63,4 +62,8 @@ class TakeStep extends PureComponent {
     }
 }
 
+/* const enhance = withObservables([], ({ database }) => ({
+    database: database
+}))
+ */
 export default TakeStep;

@@ -1,5 +1,5 @@
 import React, { Component, PureComponent } from "react";
-import { View, Text, StyleSheet, Dimensions, TextInput, FlatList, TouchableOpacity, NativeModules, RefreshControl, ScrollView } from "react-native";
+import { ToastAndroid, View, Text, StyleSheet, Dimensions, TextInput, FlatList, TouchableOpacity, NativeModules, RefreshControl, ScrollView } from "react-native";
 import { Image, Button } from 'react-native-elements';
 import { sia } from "@services";
 import Item from "./Item";
@@ -30,10 +30,21 @@ class List extends PureComponent {
 
     _onRefresh() {
         this.setState({ refreshing: true });
-        this._getCulture().then(() => this.setState({ refreshing: false }));
+        this._getCulture()
+            .then(() => this.setState({ refreshing: false }))
+            .catch(error => {
+                this.setState({ refreshing: false });
+                ToastAndroid.showWithGravityAndOffset(
+                    "Não foram encontrados nenhum dado!",
+                    ToastAndroid.SHORT,
+                    ToastAndroid.BOTTOM,
+                    25,
+                    50
+                );
+            });
     }
     _onItemPress = (item) => {
-        this.props.navigation.navigate("Details", {item: item});
+        this.props.navigation.navigate("Details", { item: item });
     }
 
     render() {
@@ -43,7 +54,7 @@ class List extends PureComponent {
                     data={this.state.kc}
                     keyExtractor={item => item._id}
                     refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this._onRefresh()} />}
-                    renderItem={({item}) => <Item item={item} onItemPress={this._onItemPress} />}
+                    renderItem={({ item }) => <Item item={item} onItemPress={this._onItemPress} />}
                 />
             </View>
         );

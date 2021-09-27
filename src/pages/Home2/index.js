@@ -15,6 +15,11 @@ import {
     ButtonMap
 } from "./styled";
 
+
+
+const opacityTitle = new Animated.Value(1);
+const translateTitle = new Animated.Value(0);
+
 class Home2 extends PureComponent {
     constructor(props) {
         super(props);
@@ -28,11 +33,21 @@ class Home2 extends PureComponent {
     componentDidMount() {
     }
 
-    componentWillReceiveProps(props){
-        
+    componentWillReceiveProps(props) {
+
     }
 
     onItemPressed = item => {
+        Animated.parallel([
+            Animated.timing(opacityTitle, {
+                toValue: 0,
+                delay: 200
+            }),
+            Animated.timing(translateTitle, {
+                toValue: -100,
+                delay: 500,
+            })
+        ]).start();
         this.setState({
             phase: 'phase-1',
             selectedItem: item,
@@ -43,6 +58,16 @@ class Home2 extends PureComponent {
         this.setState({
             phase: 'phase-3',
         });
+        Animated.parallel([
+            Animated.timing(opacityTitle, {
+                toValue: 1,
+                delay: 500
+            }),
+            Animated.timing(translateTitle, {
+                toValue: 0,
+                delay: 200,
+            })
+        ]).start();
     };
 
     onSharedElementMovedToSource = () => {
@@ -64,6 +89,7 @@ class Home2 extends PureComponent {
 
     renderPage(props) {
         const { phase, selectedItem } = this.state;
+        console.log("SELE >>", selectedItem);
         return (
             <View style={{ flex: 1 }}>
                 <SpaceList
@@ -88,8 +114,8 @@ class Home2 extends PureComponent {
         return (
             <SharedElementRenderer >
                 <View style={{ flex: 1, backgroundColor: '#ffff' }}>
-                    <Header style={{ position: 'absolute', top: 0, bottom:245, left: 0, right: 0, }}>
-                        <Title >
+                    <Header style={{ position: 'absolute', top: 0, bottom: 245, left: 0, right: 0, }}>
+                        <Title style={{ opacity: opacityTitle, transform: [{ translateY: translateTitle }] }}>
                             GrowApp
                         </Title>
                     </Header>

@@ -56,11 +56,11 @@ class KcSelection extends PureComponent {
                         renderItem={({ item }) => (
                             <TouchableOpacity onPress={() => this._onPressKcPhaseSelection(item)}>
                                 <ListItem
-                                    title={item.culture}
-                                    subtitle={item.type}
+                                    title={item.name.ptBR}
+                                    subtitle={item.type ? item.type.ptBR : null}
                                     leftAvatar={{
-                                        source: item.image_link && { uri: item.image_link },
-                                        title: item.culture
+                                        source: item.icon && { uri: item.icon },
+                                        title: item.name.ptBR
                                     }}
                                     bottomDivider
                                     chevron

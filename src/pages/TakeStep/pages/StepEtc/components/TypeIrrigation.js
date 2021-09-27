@@ -12,7 +12,7 @@ export default (props) => {
     }
 
     return (
-        <View style={{ flex: 1, paddingHorizontal: 23, paddingVertical: 20, justifyContent: 'center' }}>
+        <View style={{ flex: 1, paddingHorizontal: 23, paddingVertical: 20,  }}>
             <TouchableOpacity style={{ flex: .3, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#FFFF', marginBottom: 20, elevation: 6 }} onPress={() => onSelectionType('drip')}>
                 <View style={{ flex: .30, padding: 5 }}>
                     <Image

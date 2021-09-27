@@ -1,6 +1,6 @@
 import React from "react";
-import { Home, ConfirmPage, Device, Home2, CultureList, Profile } from '@pages'
-import { View, Animated, Text, StyleSheet, Dimensions, TextInput, FlatList, TouchableOpacity, NativeModules, RefreshControl, ScrollView, InteractionManager } from "react-native";
+import { Home, ConfirmPage, TakeStep, Device, Home2, CultureList, Profile } from '@pages'
+import { View, Animated, StatusBar, Text, StyleSheet, Dimensions, TextInput, FlatList, TouchableOpacity, NativeModules, RefreshControl, ScrollView, InteractionManager } from "react-native";
 import { Icon } from "react-native-elements";
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -143,89 +143,116 @@ function MyTabBar({ state, descriptors, navigation, position }) {
 
 const Tab = createMaterialTopTabNavigator();
 
-const TabMainNavigator = () => {
+const TabNavigator = () => {
     return (
-        <NavigationContainer>
-            <Tab.Navigator
-                tabBarPosition={"bottom"}
-                style={{
-                    backgroundColor: '#ffff'
-                }}
-                tabBarOptions={{
-                    showIcon: true,
-                    showLabel: false,
-                    renderIndicator: () => null
+        <Tab.Navigator
+            tabBarPosition={"bottom"}
+            style={{
+                backgroundColor: '#ffff'
+            }}
+            tabBarOptions={{
+                showIcon: true,
+                showLabel: false,
+                renderIndicator: () => null,
+            }}
+
+        >
+            <Tab.Screen
+                name="Home"
+                options={{
+                    tabBarIcon: ({ focused, color, size }) => (
+                        <Icon
+                            color={color}
+                            size={focused ? 22 + 3 : 22}
+                            name='home'
+                            type='feather'
+                        />
+                    )
                 }}
             >
-                <Tab.Screen
-                    name="Home"
-                    options={{
-                        tabBarIcon: ({ focused, color, size }) => (
-                            <Icon
-                                color={color}
-                                size={focused ? 22 + 3 : 22}
-                                name='home'
-                                type='feather'
-                            />
-                        )
-                    }}
-                >
-                    {props => <Home2 {...props} />}
-                </Tab.Screen>
+                {props => <Home2 {...props} />}
+            </Tab.Screen>
 
-                <Tab.Screen
-                    name="List"
-                    options={{
-                        tabBarIcon: ({ focused, color, size }) => (
-                            <Icon
-                                color={color}
-                                size={focused ? 23 + 3 : 23}
-                                name='list'
-                                type='feather'
-                            />
-                        )
-                    }}
-                >
-                    {props => <CultureList {...props} />}
-                </Tab.Screen>
+            <Tab.Screen
+                name="List"
+                options={{
+                    tabBarIcon: ({ focused, color, size }) => (
+                        <Icon
+                            color={color}
+                            size={focused ? 23 + 3 : 23}
+                            name='list'
+                            type='feather'
+                        />
+                    )
+                }}
+            >
+                {props => <CultureList {...props} />}
+            </Tab.Screen>
 
-                <Tab.Screen
-                    name="Devices"
-                    options={{
-                        tabBarIcon: ({ focused, color, size }) => (
-                            <Icon
-                                color={color}
-                                size={focused ? 23 + 3 : 23}
-                                name='mobile-signal'
-                                type='foundation'
-                            />
-                        )
-                    }}
-                >
-                    {props => <Device {...props} />}
-                </Tab.Screen>
+            <Tab.Screen
+                name="Devices"
+                options={{
+                    tabBarIcon: ({ focused, color, size }) => (
+                        <Icon
+                            color={color}
+                            size={focused ? 23 + 3 : 23}
+                            name='mobile-signal'
+                            type='foundation'
+                        />
+                    )
+                }}
+            >
+                {props => <Device {...props} />}
+            </Tab.Screen>
 
-                <Tab.Screen
-                    name="Profile"
-                    options={{
-                        tabBarIcon: ({ focused, color, size }) => (
-                            <Icon
-                                color={color}
-                                size={focused ? 22 + 2 : 22}
-                                name='user-circle'
-                                type='font-awesome'
-                            />
-                        )
-                    }}
-                >
-                    {props => <Profile {...props} />}
-                </Tab.Screen>
+            <Tab.Screen
+                name="Profile"
+                options={{
+                    tabBarIcon: ({ focused, color, size }) => (
+                        <Icon
+                            color={color}
+                            size={focused ? 22 + 2 : 22}
+                            name='user-circle'
+                            type='font-awesome'
+                        />
+                    )
+                }}
+            >
+                {props => <Profile {...props} />}
+            </Tab.Screen>
 
-            </Tab.Navigator>
+        </Tab.Navigator>
+    );
+}
+
+const Stack = createStackNavigator();
+
+const StackNavigation = () => {
+    return (
+        <Stack.Navigator
+        >
+            <Stack.Screen
+                name='Initial'
+                component={TabNavigator}
+                options={{ header: () => null }}
+            />
+            <Stack.Screen
+                name='TakeStep'
+                component={TakeStep}
+                options={{ headerStatusBarHeight: 10 }}
+            />
+        </Stack.Navigator>
+    );
+}
+
+const MainNavigation = () => {
+    return (
+        <NavigationContainer>
+            <StackNavigation />
         </NavigationContainer>
     );
 }
 
-const App = TabMainNavigator;
+const App = MainNavigation;
 
 export default App;

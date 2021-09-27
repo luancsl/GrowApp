@@ -28,11 +28,13 @@ class CultureList extends PureComponent {
                 <CultureStack.Navigator>
                     <CultureStack.Screen
                         name='List'
+                        options={{ headerTitle: 'Culturas' }}
                     >
                         {props => <List {...props} />}
                     </CultureStack.Screen>
                     <CultureStack.Screen
                         name='Details'
+                        options={{ headerTitle: 'Detalhes' }}
                     >
                         {props => <Details {...props} />}
                     </CultureStack.Screen>

@@ -12,6 +12,9 @@ import { Image, Button } from 'react-native-elements';
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { Creators as SpaceActions } from "@store/ducks/space";
+import withObservables from '@nozbe/with-observables'
+import { withDatabase } from '@nozbe/watermelondb/DatabaseProvider'
+
 
 const buttonTextStyle = {
     color: '#686868',
@@ -32,9 +35,9 @@ const buttonsText = {
 
 class StepEtc extends PureComponent {
     state = {
-        dripMinute: 0,
-        dripperSpacing: 0,
-        rowWidth: 0,
+        dripMinute: '',
+        dripperSpacing: '',
+        rowWidth: '',
         cultureImageLink: '',
         kc: 0,
         culture: '',
@@ -46,10 +49,12 @@ class StepEtc extends PureComponent {
         flowRate: 0,
         eto: null,
         data: null,
+        name: '',
 
     }
 
     componentDidMount() {
+        console.log("DASS>> ", JSON.stringify(this.props.data.features, null, 4));
         const { data } = this.props;
         const { payload } = this.props.route.params;;
         this.setState({ data: data, culture: payload.kc.culture, cultureType: payload.kc.type });
@@ -63,10 +68,15 @@ class StepEtc extends PureComponent {
         }
     };
 
-    onNextStep = () => {
+    onNextStepFlow = () => {
         console.log('called next step');
         const result = FlowCalculator(this.state.dripMinute, this.state.dripperSpacing, this.state.rowWidth);
-        this.setState({ flowRate: result });
+        /* const name = this.state.cultureType === '' ?
+            `${this.state.culture.substr(0, 1)}-${this.state.culturePhase}${this.state.typeIrrigation.substr(0, 1).toUpperCase()}${this.state.typeIrrigation.substr(-1)}-${this.state.data.features.parameters.location.lat.toString().substr(-2, 2)}${this.state.data.features.parameters.location.lon.toString().substr(-2, 2)}`
+            :
+            `${this.state.culture.substr(0, 1)}-${this.state.culturePhase}${this.state.cultureType.substr(0, 1).toUpperCase()}${this.state.cultureType.substr(-1)}${this.state.typeIrrigation.substr(0, 1).toUpperCase()}${this.state.typeIrrigation.substr(-1)}-${this.state.data.features.parameters.location.lat.toString().substr(-2, 2)}${this.state.data.features.parameters.location.lon.toString().substr(-2, 2)}` */
+
+        this.setState({ name: 'maria', flowRate: result });
     };
 
     onCancelStep = () => {
@@ -94,17 +104,14 @@ class StepEtc extends PureComponent {
     handleSubmit() {
         this.props.onFinish();
 
-        const { spaces, addSpace } = this.props;
+        const { spaces, addSpace, database } = this.props;
 
-        const timeCalc = Math.floor(Math.random() * (160 - 1) + 1);
+        const timeCalc = Math.floor(Math.random() * (10 - 1) + 1);
         console.log('kcCulture:', this.state.kc);
 
-        const name = this.state.cultureType === '' ?
-            `${this.state.culture.substr(0, 1)}-${this.state.culturePhase}${this.state.typeIrrigation.substr(0, 1).toUpperCase()}${this.state.typeIrrigation.substr(-1)}-${this.state.data.features.parameters.location.lat.toString().substr(-2, 2)}${this.state.data.features.parameters.location.lon.toString().substr(-2, 2)}`
-            :
-            `${this.state.culture.substr(0, 1)}-${this.state.culturePhase}${this.state.cultureType.substr(0, 1).toUpperCase()}${this.state.cultureType.substr(-1)}${this.state.typeIrrigation.substr(0, 1).toUpperCase()}${this.state.typeIrrigation.substr(-1)}-${this.state.data.features.parameters.location.lat.toString().substr(-2, 2)}${this.state.data.features.parameters.location.lon.toString().substr(-2, 2)}`
+
         const data = {
-            name: name,
+            name: `${Math.random()}`,
             cultureImageLink: this.state.cultureImageLink,
             culture: this.state.culture,
             cultureType: this.state.cultureType,
@@ -118,6 +125,14 @@ class StepEtc extends PureComponent {
         }
         console.log("luan: ", data);
         addSpace(data);
+
+        database.action(async () => {
+            return await database.collections.get('spaces_profile').create(spaceprofile => {
+                spaceprofile.name = data.name
+                spaceprofile.cultureImageLink = data.cultureImageLink
+                spaceprofile.kc = data.kc
+            })
+        })
     }
 
     render() {
@@ -136,7 +151,7 @@ class StepEtc extends PureComponent {
         const kc = payload.kc;
 
         return (
-            <View style={{ flex: 0.82, padding: 1 }}>
+            <View style={{ flex: 1, paddingHorizontal: 10 }}>
                 <ProgressSteps
                     activeStep={this.state.activeStep}
                     onChangeActiveStep={(value) => this.setState({ activeStep: value })}
@@ -150,7 +165,8 @@ class StepEtc extends PureComponent {
                         scrollViewProps={this.defaultScrollViewProps}
                         nextBtnTextStyle={buttonTextStyle}
                         previousBtnTextStyle={buttonTextStyle}
-                        nextBtnHidden={true}
+                        nextBtnDisabled={true}
+                        nextBtnText=''
                     >
                         <View style={{ flex: 1 }}>
                             <KcPhaseSelection
@@ -168,7 +184,8 @@ class StepEtc extends PureComponent {
                         scrollViewProps={this.defaultScrollViewProps}
                         nextBtnTextStyle={buttonTextStyle}
                         previousBtnTextStyle={buttonTextStyle}
-                        nextBtnHidden={true}
+                        nextBtnDisabled={true}
+                        nextBtnText=''
                     >
                         <View style={{ flex: 1 }}>
                             <TypeIrrigation
@@ -179,13 +196,14 @@ class StepEtc extends PureComponent {
                     <ProgressStep
                         label="Vazão"
                         {...buttonsText}
-                        onNext={this.onNextStep}
+                        onNext={this.onNextStepFlow}
                         onCancel={this.onCancelStep}
                         onPrevious={this.onPrevStep}
                         scrollViewProps={this.defaultScrollViewProps}
                         nextBtnTextStyle={buttonTextStyle}
                         previousBtnTextStyle={buttonTextStyle}
                         nextBtnHidden={false}
+
                     >
                         <View style={{ flex: 1 }}>
                             <FlowRate
@@ -209,26 +227,54 @@ class StepEtc extends PureComponent {
                         previousBtnTextStyle={buttonTextStyle}
                         nextBtnHidden={false}
                     >
-                        <View style={{ flex: 1 }}>
-
+                        <View style={{ flex: 1, paddingHorizontal: 25 }}>
+                            <View style={{ marginBottom: 5, marginTop: 20 }}>
+                                <Text style={{ fontSize: 20, color: '#404040' }}>Nome único para o espaço</Text>
+                                <Text style={{ fontSize: 10, color: '#1118', fontStyle: 'italic' }}>Dê um nome único para o espaço ou deixe como o da sugestão.</Text>
+                            </View>
+                            <TextInput
+                                style={{ height: 40, backgroundColor: '#F5F5F5', borderRadius: 10, elevation: 1 }}
+                                value={this.state.name}
+                                onChangeText={value => this.setState({ name: value })}
+                            />
                         </View>
                     </ProgressStep>
                     <ProgressStep
-                        label="Confirmação"
+                        label="Confirme"
                         {...buttonsText}
-                        onNext={() => this.handleSubmit()}
                         onPrevious={this.onPrevStep}
+                        onSubmit={() => this.handleSubmit()}
                         scrollViewProps={this.defaultScrollViewProps}
                         nextBtnTextStyle={buttonTextStyle}
                         previousBtnTextStyle={buttonTextStyle}
                         nextBtnHidden={false}
                     >
-                        <View style={{ alignItems: 'center' }}>
-                            <Button
-                                title={'Confirmar'}
-                                buttonStyle={{ marginBottom: 10 }}
-                                onPress={() => this.handleSubmit()}
-                            />
+                        <View style={{ flex: 1, marginTop: 20, paddingHorizontal: 20 }}>
+                            <View style={{ flexDirection: 'row', }}>
+                                <View style={{ marginRight: 20, borderRadius: 10, overflow: 'hidden', backgroundColor: '#fff', elevation: 5 }}>
+                                    <Image
+                                        source={{ uri: this.state.cultureImageLink }}
+                                        containerStyle={{ borderRadius: 5, overflow: 'hidden', }}
+                                        style={{ width: 100, height: 100 }}
+                                    />
+                                </View>
+                                <View style={{ flex: 1 }}>
+                                    <Text style={{ fontSize: 23, color: '#1118', fontWeight: 'bold', flexWrap: 'wrap', alignItems: 'flex-start' }}>Cultura {this.state.culture}</Text>
+                                    {this.state.cultureType !== '' ?
+                                        <Text>Tipo {this.state.cultureType}</Text>
+                                        :
+                                        null
+                                    }
+                                </View>
+                            </View>
+                            <Text style={{ fontSize: 20, color: '#404040', marginTop: 20 }}>Fase do cultivo</Text>
+                            <Text>Fase {this.state.culturePhase} Kc {this.state.kc}</Text>
+                            <Text style={{ fontSize: 20, color: '#404040', marginTop: 20 }}>Tipo de Irrigação</Text>
+                            <Text>Irrigação por {this.state.typeIrrigation === 'drip' ? 'gotejamento' : 'aspersão'}</Text>
+                            <Text style={{ fontSize: 20, color: '#404040', marginTop: 20 }}>Vazão</Text>
+                            <Text>Gotas por minuto: {this.state.dripMinute} gotas/min</Text>
+                            <Text>Espaçamento entre gotejadores: {this.state.dripperSpacing} cm</Text>
+                            <Text>Largura da linha: {this.state.rowWidth} cm</Text>
                         </View>
                     </ProgressStep>
                 </ProgressSteps>
@@ -243,7 +289,9 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProp = dispatch => bindActionCreators(SpaceActions, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProp)(StepEtc);
+
+/* withDatabase pega o banco de dados onde quer que esteja */
+export default connect(mapStateToProps, mapDispatchToProp)(withDatabase(StepEtc));
 
 
 const styles = StyleSheet.create({

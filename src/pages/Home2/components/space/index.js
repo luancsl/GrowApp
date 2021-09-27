@@ -71,7 +71,8 @@ class Space extends PureComponent {
     render() {
 
         const { item, isHidden, animateOnDidMount } = this.props;
-        const { name, cultureImageLink, currentTime, time } = item;
+        const { name, cultureImageLink, currentTime, time, kc2 } = item;
+        console.log("JUAN >>", item) 
         return (
             <ScaleAndOpacity
                 isHidden={isHidden}

@@ -16,34 +16,34 @@ export default (props) => {
         <View style={{ flex: 1 }}>
             <View style={styles.header}>
                 <Image
-                    source={{ uri: kc.image_link }}
+                    source={{ uri: kc.icon }}
                     containerStyle={{ borderRadius: 5, overflow: 'hidden', }}
-                    style={{ width: 60, height: 60, }}
+                    style={{ width: 100, height: 100, }}
                 />
             </View>
 
             <View style={styles.buttons}>
                 <View style={{ marginBottom: 10 }}>
-                    <Text>Qual a fase que a cultura se encontra?</Text>
+                    <Text style={{ fontSize: 20, color: '#404040', marginBottom: 5 }}>Qual a fase que a cultura se encontra?</Text>
                 </View>
 
                 <Button
-                    title={'Inicio - ' + kc.ini}
+                    title={'Inicio - ' + kc.iniStagekc}
                     buttonStyle={{ marginBottom: 10, borderRadius: 8, backgroundColor: '#fff', elevation: 2, }}
                     type="outline"
-                    onPress={() => onSelectionPhase({ cultureImageLink: kc.image_link, culturePhase: 'ini', kc: kc.ini })}
+                    onPress={() => onSelectionPhase({ cultureImageLink: kc.icon, culturePhase: 'ini', kc: kc.iniStagekc })}
                 />
                 <Button
-                    title={'Meio - ' + kc.mid}
+                    title={'Meio - ' + kc.midStagekc}
                     buttonStyle={{ marginBottom: 10, borderRadius: 8, backgroundColor: '#fff', elevation: 2, }}
                     type="outline"
-                    onPress={() => onSelectionPhase({ cultureImageLink: kc.image_link, culturePhase: 'mid', kc: kc.mid })}
+                    onPress={() => onSelectionPhase({ cultureImageLink: kc.icon, culturePhase: 'mid', kc: kc.midStagekc })}
                 />
                 <Button
-                    title={'Fim - ' + kc.end}
+                    title={'Fim - ' + kc.endStagekc}
                     buttonStyle={{ marginBottom: 10, borderRadius: 8, backgroundColor: '#fff', elevation: 2, }}
                     type="outline"
-                    onPress={() => onSelectionPhase({ cultureImageLink: kc.image_link, culturePhase: 'end', kc: kc.end })}
+                    onPress={() => onSelectionPhase({ cultureImageLink: kc.icon, culturePhase: 'end', kc: kc.endStagekc })}
                 />
             </View>
         </View>
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     },
     buttons: {
         flex: 1,
-        paddingHorizontal: 80,
+        paddingHorizontal: 50,
         justifyContent: 'flex-start',
 
     },

@@ -1,4 +1,5 @@
 import { createActions, createReducer } from 'reduxsauce';
+import { Notification } from "@common";
 
 /* Types and actions */
 export const { Types, Creators } = createActions({
@@ -21,7 +22,21 @@ const addSpace = (state = INITIAL_STATE, action) => [
 const decreaseTime = (state = INITIAL_STATE, action) => {
     return state.map((i) => {
         if (i.play) {
-            return ({ ...i, currentTime: (i.currentTime > 0 ? i.currentTime - 1 : i.currentTime) });
+            if (i.currentTime > 0) {
+                const newValue = i.currentTime - 1;
+                if (newValue === 0) {
+                    Notification({
+                        id: i.name,
+                        culture: i.culture,
+                        type: i.cultureType
+                    });
+                }
+                return ({ ...i, currentTime: newValue });
+            } else {
+                return ({ ...i });
+            }
+        } else {
+            return ({ ...i });
         }
     })
 };

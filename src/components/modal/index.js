@@ -11,7 +11,7 @@ export default (props) => {
             onRequestClose={props.onRequestClose}
         >
             <TouchableWithoutFeedback onPress={() => { props.pressOut() }}>
-                <View style={[styles.modal, { backgroundColor: props.backgroundColor }]} >
+                <View style={[styles.modal, { opacity: .5 }, { backgroundColor: props.backgroundColor }]} >
                     <TouchableWithoutFeedback>
                         <View style={[styles.modal3, { height: props.height, width: props.width }, props.style]} >
                             {props.children}

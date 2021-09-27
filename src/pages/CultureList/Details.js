@@ -26,31 +26,31 @@ class Details extends PureComponent {
                     <View style={{ flex: .4, margin: 5, borderRadius: 15, elevation: 6, overflow: 'hidden', backgroundColor: '#fff' }}>
                         <Image
                             source={{
-                                uri: item.image_link,
+                                uri: item.icon,
                             }}
                             resizeMode="cover"
                             style={{ width: 120, height: 130 }}
                         />
                     </View>
                     <View style={{ flex: .6, margin: 8, alignItems: 'center' }}>
-                        <Text style={{ fontSize: 30, fontWeight: 'bold', color: "#1116" }}>{item.culture}</Text>
-                        <Text>{item.type}</Text>
+                        <Text style={{ fontSize: 30, fontWeight: 'bold', color: "#1116" }}>{item.name.ptBR}</Text>
+                        <Text>{item.type ? item.type.ptBR : null}</Text>
                     </View>
                 </View>
 
                 <View style={{ flex: 1, padding: 9, margin: 3, marginTop: 20, backgroundColor: '#fff', borderRadius: 6, elevation: 0 }}>
-                    <Text style={{ fontSize: 23, fontWeight: 'bold', color: "#1119" }}>Coeficientes da Cultura</Text>
+                    <Text style={{ fontSize: 23, fontWeight: 'bold', color: "#1119" }}>Coeficientes da Cultura (Kc)</Text>
                     <View style={{ flexDirection: 'row', marginLeft: 20, marginVertical: 8, marginTop: 15 }}>
                         <Text style={{ fontSize: 15, fontWeight: 'bold', color: "#1116" }}>Fase de Crescimento Inicial: </Text>
-                        <Text style={{ fontSize: 16, fontWeight: 'bold', color: "#1116" }}>{(item.ini + "").replace('.', ',')}</Text>
+                        <Text style={{ fontSize: 16, fontWeight: 'bold', color: "#1116" }}>{(item.iniStagekc + "").replace('.', ',')}</Text>
                     </View>
                     <View style={{ flexDirection: 'row', marginLeft: 20, marginVertical: 8 }}>
                         <Text style={{ fontSize: 15, fontWeight: 'bold', color: "#1116" }}>Fase de Crescimento Intermediário: </Text>
-                        <Text style={{ fontSize: 16, fontWeight: 'bold', color: "#1116" }}>{(item.mid + "").replace('.', ',')}</Text>
+                        <Text style={{ fontSize: 16, fontWeight: 'bold', color: "#1116" }}>{(item.midStagekc + "").replace('.', ',')}</Text>
                     </View>
                     <View style={{ flexDirection: 'row', marginLeft: 20, marginVertical: 8 }}>
                         <Text style={{ fontSize: 15, fontWeight: 'bold', color: "#1116" }}>Fase de Crescimento Final: </Text>
-                        <Text style={{ fontSize: 16, fontWeight: 'bold', color: "#1116" }}>{(item.end + "").replace('.', ',')}</Text>
+                        <Text style={{ fontSize: 16, fontWeight: 'bold', color: "#1116" }}>{(item.endStagekc + "").replace('.', ',')}</Text>
                     </View>
                 </View>
 

@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
+import { View, Text, TouchableOpacity, ActivityIndicator, Animated } from "react-native";
 import Geolocation from '@react-native-community/geolocation';
 import Map from "react-native-maps";
 import { Color } from "@common";
@@ -20,6 +20,18 @@ class MapView extends PureComponent {
             error: null,
             data: null,
             progress: false,
+            initialRegion: {
+                latitude: -3.874834,
+                longitude: -32.492555,
+                latitudeDelta: 0.0131,
+                longitudeDelta: 0.0131
+            },
+            region: {
+                latitude: -3.874834,
+                longitude: -32.492555,
+                latitudeDelta: 0.0131,
+                longitudeDelta: 0.0131
+            },
 
         }
     }
@@ -49,11 +61,22 @@ class MapView extends PureComponent {
     _getLocation() {
         Geolocation.getCurrentPosition(
             position => {
-                this.setState({ latitude: position.coords.latitude, longitude: position.coords.longitude })
+                const region = {
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude,
+                    latitudeDelta: 0.0131,
+                    longitudeDelta: 0.0131
+                }
+                this.setState({
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude,
+                    region: region
+                });
             },
             error => {
+
             },
-            { enableHighAccuracy: true, timeout: 8000, maximumAge: 1000 }
+            { enableHighAccuracy: false, timeout: 30000, maximumAge: 1000 }
         );
     }
 
@@ -66,6 +89,7 @@ class MapView extends PureComponent {
             this.setState({ data: resposta });
             this.setState({ progress: false });
             this.props.navigation.navigate('TakeStep', resposta);
+            this.props.onPressLocais();
         });
 
     }
@@ -79,12 +103,12 @@ class MapView extends PureComponent {
 
     render() {
         return (
-            <View style={{ backgroundColor: '#fff' }}>
+            <Animated.View style={[{ backgroundColor: '#fff', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, zIndex: 15 }, this.props.style]}>
                 <View style={{ backgroundColor: 'transparent', flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 25, paddingHorizontal: 40, paddingBottom: 13, position: 'absolute', left: 0, right: 0, zIndex: 20 }}>
 
                     <TouchableOpacity
                         style={{ height: 40, width: 75, borderRadius: 20, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff', elevation: 2 }}
-                        onPress={() => this.props.navigation.navigate('Home')}
+                        onPress={() => this.props.onPressLocais()}
                     >
                         <Text style={{ fontSize: 18, color: '#1119' }}>Locais</Text>
                     </TouchableOpacity>
@@ -100,12 +124,9 @@ class MapView extends PureComponent {
                         null
                 }
                 <Map
-                    initialRegion={{
-                        latitude: this.state.latitude,
-                        longitude: this.state.longitude,
-                        latitudeDelta: 0.0102,
-                        longitudeDelta: 0.0101
-                    }}
+                    initialRegion={this.state.initialRegion}
+                    region={this.state.region}
+                    onRegionChangeComplete={(value) => this.setState({ region: value })}
                     onPress={() => { }}
                     onLongPress={e => { this._handleLongPress(e); }}
                     style={{ height: '110%', top: 0, bottom: 0, left: 0, right: 0 }}
@@ -116,7 +137,7 @@ class MapView extends PureComponent {
                     showBuildings={false}
                     showsUserLocation={true}
                     followsUserLocation={true}
-                    showsMyLocationButton={true}
+                    showsMyLocationButton={false}
                     showsPointsOfInterest={true}
                     showsCompass={true}
                 >
@@ -134,7 +155,7 @@ class MapView extends PureComponent {
                         />
                     }
                 </Map>
-            </View>
+            </Animated.View>
         );
     }
 }

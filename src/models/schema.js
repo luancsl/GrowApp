@@ -1,0 +1,72 @@
+import { appSchema, tableSchema } from '@nozbe/watermelondb'
+
+export const mySchema = appSchema({
+  version: 2,
+  tables: [
+    tableSchema({
+      name: 'spaces_profile',
+      columns: [
+        { name: 'lat', type: 'number' },
+        { name: 'lng', type: 'number' },
+        { name: 'elevation', type: 'number' },
+        { name: 'service', type: 'string' },
+        { name: 'type', type: 'string' },
+        { name: 'equation', type: 'string' },
+        { name: 'stationName', type: 'string' },
+        { name: 'stationCity', type: 'string' },
+        { name: 'stationState', type: 'string' },
+        { name: 'stationCountry', type: 'string' },
+        { name: 'stationDistance', type: 'number' },
+        { name: 'tMax', type: 'number' },
+        { name: 'tMin', type: 'number' },
+        { name: 'hum', type: 'number' },
+        { name: 'windS', type: 'number' },
+        { name: 'radQo', type: 'number' },
+        { name: 'radQg', type: 'number' },
+        { name: 'eto', type: 'number' },
+        { name: 'name', type: 'string', isIndexed: true },
+        { name: 'class', type: 'string' },
+        { name: 'regionName', type: 'string' },
+        { name: 'iniStagekc', type: 'number' },
+        { name: 'midStagekc', type: 'number' },
+        { name: 'endStagekc', type: 'number' },
+        { name: 'iniStageDays', type: 'number' },
+        { name: 'devStageDays', type: 'number' },
+        { name: 'midStageDays', type: 'number' },
+        { name: 'endStageDays', type: 'number' },
+        { name: 'totalDays', type: 'number' },
+        { name: 'kc', type: 'number' },
+        { name: 'phase_select', type: 'string' },
+        { name: 'time', type: 'number' },
+        { name: 'currentTime', type: 'number' },
+        { name: 'play', type: 'boolean' },
+        { name: 'cultureImageLink', type: 'string' },
+        { name: 'created_at', type: 'number' },
+        { name: 'updated_at', type: 'number' },
+        { name: 'play_at', type: 'number' },
+
+      ],
+    }),
+    tableSchema({
+      name: 'blogs',
+      columns: [{ name: 'name', type: 'string' }],
+    }),
+    tableSchema({
+      name: 'posts',
+      columns: [
+        { name: 'title', type: 'string' },
+        { name: 'subtitle', type: 'string' },
+        { name: 'body', type: 'string' },
+        { name: 'blog_id', type: 'string', isIndexed: true },
+      ],
+    }),
+    tableSchema({
+      name: 'comments',
+      columns: [
+        { name: 'body', type: 'string' },
+        { name: 'post_id', type: 'string', isIndexed: true },
+        { name: 'is_nasty', type: 'boolean' },
+      ],
+    }),
+  ],
+})
