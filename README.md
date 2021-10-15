@@ -14,6 +14,18 @@ e informações da cultura inseridas anteriormente, este perfil é de controle d
 ao produtor a quantidade de tempo necessário que ele deve deixar seu sistema de irrigação ligado
 para que seja cumprido a reposição do déficit hídrico exigido pela planta no dia.
 
+Entre as principais funcionalidades, estão:
+1. Notificação push, ao término do tempo de cada perfil.
+2. Loja de culturas, onde é possível visualizar dados sobre as culturas disponíveis para
+inserção.
+3. Escolha de local no mapa para configuração de perfil, sem a necessidade de está no
+local da irrigação.
+4. Conexão e sincronização com dispositivo GrowConnect de irrigação automatizada.
 
 
-![Alt text](doc/GrowApp.png "Title")
+![Alt text](doc/GrowApp.png "GrowApp")
+
+![Alt text](doc/GrowConnect.png "GrowConnect")
+
+![Alt text](doc/GrowConnect2.png "GrowConnectCampo")
+
